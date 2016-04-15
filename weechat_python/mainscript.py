@@ -177,6 +177,8 @@ for timer in timer_data['timers']:
     hook = hook_timer(max(1, timer['when'] - now), cmd_timer_callback, _ud)
     _ud['hook'] = hook
 
+MAX_TIMER_LENGTH = 60 * 60 * 24 * 7 * 4  # in seconds
+
 
 @hook_irc_command('+timer')
 def timer_hook(ctx, pline, userdata):
@@ -184,7 +186,7 @@ def timer_hook(ctx, pline, userdata):
     args = pline.trailing.split(None, 2)
     usage = '/notice {} Invalid syntax: +timer <[ digits "h" ]' \
             '[ digits "m" ][ digits "s" ]> <message>'.format(caller)
-    
+
     if len(args) < 3:
         ctx.command(usage)
         return
@@ -194,10 +196,10 @@ def timer_hook(ctx, pline, userdata):
     if not time_seconds:
         ctx.command(usage)
         return
-    
-    if time_seconds > 2147483:
-        ctx.command('/notice {} Too large, maximum is 2147483 seconds or {}'
-                    .format(caller, seconds_to_string(2147483)))
+
+    if time_seconds > MAX_TIMER_LENGTH:
+        ctx.command('/notice {} Too large, maximum is {} seconds or {}'
+                    .format(caller, MAX_TIMER_LENGTH, seconds_to_string(MAX_TIMER_LENGTH)))
         return
 
     _userdata = dict(
@@ -210,7 +212,7 @@ def timer_hook(ctx, pline, userdata):
     _userdata['hook'] = hook
     tid = add_timer(time_seconds, _userdata)
     _userdata['tid'] = tid
-    
+
     dt = datetime.now() + timedelta(seconds=time_seconds)
     ctx.command('/notice {} timer set to {} seconds ({}, Timer Id: {}, around: {})'.format(
         caller, time_seconds, seconds_to_string(time_seconds), tid, dt.strftime('%Y-%m-%d %H:%M:%S')))
