@@ -185,7 +185,7 @@ MAX_TIMER_LENGTH = 60 * 60 * 24 * 7 * 4  # in seconds
 def timer_hook(ctx, pline, userdata):
     caller = pline.prefix.nick
     args = pline.trailing.split(None, 2)
-    usage = '/notice {} Invalid syntax: +timer <[ digits "h" ]' \
+    usage = '/notice {} Invalid syntax: +timer <[ digits "d" ][ digits "h" ]' \
             '[ digits "m" ][ digits "s" ]> [<message>]'.format(caller)
 
     if len(args) < 2:
