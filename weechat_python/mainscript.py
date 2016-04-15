@@ -379,11 +379,11 @@ def nyaa(ctx, pline, ud):
     if len(args) == 1:
         mylist = infolist_get(
             "irc_nick", "{},{}".format(ctx.server, ctx.channel))
-        nicklist = list(set(user.name for user in mylist) -
-                        set([ctx.nickname]))
+        nicklist = [user.name for user in mylist if ctx.nickname != user.name]
         nick = random.choice(nicklist)
-        while nick.lower() in last_nyaa_users:
-            nick = random.choice(nicklist)
+        if len(nicklist) > len(last_nyaa_users):
+            while nick.lower() in last_nyaa_users:
+                nick = random.choice(nicklist)
         last_nyaa_users.append(nick.lower())
         last_nyaa_users = last_nyaa_users[-min(5, len(nicklist)):]
 
