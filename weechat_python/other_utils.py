@@ -2,6 +2,9 @@
 from __future__ import division, print_function
 import re
 
+import dateutil.parser
+
+
 time_pattern = re.compile(
     r'^'
     r'(?:(?P<d>\d+)[dD])?'
@@ -41,6 +44,14 @@ def to_seconds(time_string):
     seconds += int(hour)*3600 if hour else 0
     seconds += int(day)*86400 if day else 0
     return seconds
+
+
+def parse_timestamp(time_string):
+    # TODO parse german weekdays?
+    try:
+        return dateutil.parser.parse(time_string)
+    except ValueError:
+        return
 
 
 def simple_tobytes(data, enc='utf-8'):
